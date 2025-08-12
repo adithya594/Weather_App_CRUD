@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+  <form action="/view" method="get">
+    <input name="location" placeholder="City, ZIP, or 'lat,lon'" required />
+    <button type="submit">Get Weather</button>
+    <button type="button" id="useLoc">Use My Location</button>
+  </form>
+
+  <h2 style="margin-top:12px">{{ place }}</h2>
+  <div class="muted">Coordinates: {{ lat }}, {{ lon }}</div>
+
+  <div class="row" style="margin-top:12px">
+    <div class="card">
+      <div class="now">
+        <img src="{{ now_icon_url }}" width="64" height="64" alt="now" />
+        <div>
+          <div><strong>{{ current.main.temp }} °C</strong> (feels {{ current.main.feels_like }} °C)</div>
+          <div>Sky: {{ current.weather[0].description }}</div>
+          <div>Humidity: {{ current.main.humidity }}% • Wind: {{ current.wind.speed }} m/s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:16px">5-Day Forecast</h3>
+  <div class="row">
+    {% for d in days %}
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="{{ d.icon }}" width="48" height="48" alt="{{ d.main }}" />
+          <div>
+            <div><strong>{{ d.date }}</strong></div>
+            <div>{{ d.main }}</div>
+            <div>Min {{ d.min }} °C • Max {{ d.max }} °C</div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const btn = document.getElementById('useLoc');
+    btn?.addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Geolocation not supported.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => window.location.href = `/from-coords?lat=${coords.latitude}&lon=${coords.longitude}`,
+        (err) => alert('Could not get location: ' + err.message),
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  </script>
+{% endblock %}

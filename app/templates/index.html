@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+  <form action="/view" method="get">
+    <input name="location" placeholder="City, ZIP, or 'lat,lon'" required />
+    <button type="submit">Get Weather</button>
+    <button type="button" id="useLoc">Use My Location</button>
+  </form>
+
+  <p class="muted" style="margin-top:8px">
+    Examples: <code>Denver</code>, <code>80521</code>, <code>80521,US</code>, <code>40.5853,-105.0844</code>, <code>Paris, FR</code>
+  </p>
+
+  <script>
+    const btn = document.getElementById('useLoc');
+    btn?.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        alert('Geolocation not supported in this browser.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const lat = coords.latitude;
+          const lon = coords.longitude;
+          window.location.href = `/from-coords?lat=${lat}&lon=${lon}`;
+        },
+        (err) => { alert('Could not get location: ' + err.message); },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  </script>
+{% endblock %}

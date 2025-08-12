@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Weather for {{ place }}</title>
+  </head>
+  <body>
+    <h1>{{ place }}</h1>
+    <p>Latitude: {{ lat }}, Longitude: {{ lon }}</p>
+    <h2>Now</h2>
+    <img src="{{ now_icon_url }}" alt="now icon" />
+    <pre>{{ current }}</pre>
+
+    <h2>5-day</h2>
+    <ul>
+    {% for d in days %}
+      <li>{{ d.date }} — min: {{ d.min }}, max: {{ d.max }}</li>
+    {% endfor %}
+    </ul>
+  </body>
+</html>
