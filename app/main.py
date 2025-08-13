@@ -9,8 +9,9 @@ app = FastAPI(title="Weather App", version="1.0.0")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # include routers
-app.include_router(weather.router, prefix="", tags=["Weather"])  # keeps existing / and /view
-app.include_router(locations.router, prefix="/api/locations", tags=["Locations"])
+app.include_router(weather.router, prefix="", tags=["Weather"])
+# Corrected line: removed the prefix so the URL path matches the front-end code
+app.include_router(locations.router, prefix="", tags=["Locations"]) 
 
 @app.get("/health")
 def health():

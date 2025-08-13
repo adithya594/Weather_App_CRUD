@@ -9,6 +9,8 @@ class ForecastBase(BaseModel):
     humidity: int | None
     sunrise: time | None
     sunset: time | None
+    main: str
+    icon: str
 
 class ForecastCreate(ForecastBase):
     pass

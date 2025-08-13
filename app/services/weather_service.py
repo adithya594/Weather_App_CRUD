@@ -52,7 +52,7 @@ def resolve_location(location: str, api_key: str):
         pieces = [p for p in [name, state, country] if p]
         return lat, lon, ", ".join(pieces)
 
-    raise Exception("Location not found")
+    raise Exception("Location not found. Try 'city, country' or a ZIP like '80521,US'.")
 
 
 def fetch_weather_raw(lat: float, lon: float, api_key: str):
@@ -90,17 +90,19 @@ def summarize_forecast(fc_json) -> List[ForecastCreate]:
 
         srise = None
         sset = None
-
+        weather_info = items[0]["weather"][0] if items and "weather" in items[0] else {}
         results.append(
-            ForecastCreate(
-                date=datetime.strptime(day, "%Y-%m-%d").date(),
-                max_temp=max_temp,
-                min_temp=min_temp,
-                feels_like=feels_like,
-                humidity=humidity,
-                sunrise=srise,
-                sunset=sset,
-            )
+        ForecastCreate(
+            date=datetime.strptime(day, "%Y-%m-%d").date(),
+            max_temp=max_temp,
+            min_temp=min_temp,
+            feels_like=feels_like,
+            humidity=humidity,
+            sunrise=srise,
+            sunset=sset,
+            main=weather_info.get("main", ""),
+            icon=f"https://openweathermap.org/img/wn/{weather_info.get('icon', '01d')}@2x.png",
+        )
         )
 
     return results
