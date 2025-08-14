@@ -1,31 +1,136 @@
 {% extends "base.html" %}
 {% block content %}
-  <form action="/view" method="get">
+<style>
+    /* CSS for the pop-up modal */
+    .info-popup {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 20px;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .info-popup-content {
+        text-align: left;
+    }
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .service-section {
+        margin-top: 15px;
+    }
+    .app-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .app-title h1 {
+        margin: 0;
+        font-size: 2.5em;
+    }
+    .app-title p {
+        margin: 5px 0 0;
+        font-size: 1em;
+        color: #6b7280;
+    }
+</style>
+
+<div class="app-title">
+    <h1>Weather App</h1>
+    <p>Built by Adithya Gopal Karumuri</p>
+</div>
+
+<form action="/view" method="get">
     <input name="location" placeholder="City, ZIP, or 'lat,lon'" required />
     <button type="submit">Get Weather</button>
     <button type="button" id="useLoc">Use My Location</button>
-  </form>
+    <button type="button" id="infoBtn">Info</button>
+</form>
 
-  <p class="muted" style="margin-top:8px">
+<p class="muted" style="margin-top:8px">
     Examples: <code>Denver</code>, <code>80521</code>, <code>80521,US</code>, <code>40.5853,-105.0844</code>, <code>Paris, FR</code>
-  </p>
+</p>
 
-  <script>
-    const btn = document.getElementById('useLoc');
-    btn?.addEventListener('click', () => {
-      if (!navigator.geolocation) {
-        alert('Geolocation not supported in this browser.');
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          const lat = coords.latitude;
-          const lon = coords.longitude;
-          window.location.href = `/from-coords?lat=${lat}&lon=${lon}`;
-        },
-        (err) => { alert('Could not get location: ' + err.message); },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
+<div id="infoPopup" class="info-popup">
+    <div class="info-popup-content">
+        <span class="close-btn" onclick="document.getElementById('infoPopup').style.display = 'none';">×</span>
+        <h3>Product Manager Accelerator</h3>
+        <p>The Product Manager Accelerator Program is designed to support PM professionals through every stage of their careers. From students looking for entry-level jobs to Directors looking to take on a leadership role, our program has helped over hundreds of students fulfill their career aspirations.</p>
+        <p>Our Product Manager Accelerator community are ambitious and committed. Through our program they have learnt, honed and developed new PM and leadership skills, giving them a strong foundation for their future endeavors.</p>
+        <h4>Examples of services we offer:</h4>
+        <p>Check out our website to learn more about our services.</p>
+        <div class="service-section">
+            <h4>🚀 PMA Pro</h4>
+            <p>End-to-end product manager job hunting program that helps you master FAANG-level Product Management skills, conduct unlimited mock interviews, and gain job referrals through our largest alumni network. 25% of our offers came from tier 1 companies and get paid as high as $800K/year.</p>
+        </div>
+        <div class="service-section">
+            <h4>🚀 AI PM Bootcamp</h4>
+            <p>Gain hands-on AI Product Management skills by building a real-life AI product with a team of AI Engineers, data scientists, and designers. We will also help you launch your product with real user engagement using our 100,000+ PM community and social media channels.</p>
+        </div>
+        <div class="service-section">
+            <h4>🚀 PMA Power Skills</h4>
+            <p>Designed for existing product managers to sharpen their product management skills, leadership skills, and executive presentation skills</p>
+        </div>
+        <div class="service-section">
+            <h4>🚀 PMA Leader</h4>
+            <p>We help you accelerate your product management career, get promoted to Director and product executive levels, and win in the board room.</p>
+        </div>
+        <div class="service-section">
+            <h4>🚀 1:1 Resume Review</h4>
+            <p>We help you rewrite your killer product manager resume to stand out from the crowd, with an interview guarantee. Get started by using our FREE killer PM resume template used by over 14,000 product managers. <a href="https://www.drnancyli.com/pmresume" target="_blank">https://www.drnancyli.com/pmresume</a></p>
+        </div>
+        <div class="service-section">
+            <p>We also published over 500+ free training and courses. Please go to my YouTube channel <a href="https://www.youtube.com/c/drnancyli" target="_blank">https://www.youtube.com/c/drnancyli</a> and Instagram <a href="https://www.instagram.com/drnancyli" target="_blank">@drnancyli</a> to start learning for free today.</p>
+        </div>
+        <hr>
+        <p><strong>Website:</strong> <a href="https://www.pmaccelerator.io/" target="_blank">https://www.pmaccelerator.io/</a></p>
+        <p><strong>Phone:</strong> +19548891063</p>
+        <p><strong>Industry:</strong> E-Learning Providers</p>
+        <p><strong>Headquarters:</strong> Boston, MA</p>
+        <p><strong>Founded:</strong> 2020</p>
+        <p><strong>Company Size:</strong> 2-10 employees</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const useLocBtn = document.getElementById('useLoc');
+        if (useLocBtn) {
+            useLocBtn.addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    alert('Geolocation not supported in this browser.');
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    ({ coords }) => {
+                        const lat = coords.latitude;
+                        const lon = coords.longitude;
+                        window.location.href = `/from-coords?lat=${lat}&lon=${lon}`;
+                    },
+                    (err) => { alert('Could not get location: ' + err.message); },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+        }
+    
+        const infoBtn = document.getElementById('infoBtn');
+        if (infoBtn) {
+            infoBtn.addEventListener('click', () => {
+                document.getElementById('infoPopup').style.display = 'block';
+            });
+        }
     });
-  </script>
+</script>
 {% endblock %}
